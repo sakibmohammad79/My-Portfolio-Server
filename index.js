@@ -27,8 +27,14 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const portfolioDataCollection = client.db('myPortfolioDb').collection('portfolioData');
+    const projectDataCollection = client.db('portfolioDb').collection('portfolioData');
 
+
+    app.get('/project', async (req, res ) => {
+      const curson = projectDataCollection.find();
+      const result = await curson.toArray();
+      res.send(result);
+  })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
