@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 app.use(cors());
@@ -34,6 +34,13 @@ async function run() {
       const curson = projectDataCollection.find();
       const result = await curson.toArray();
       res.send(result);
+  })
+
+  app.get('/project/:id', async(req, res) => {
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)}
+    const result = await projectDataCollection.findOne(query);
+    res.send(result);
   })
 
     // Send a ping to confirm a successful connection
