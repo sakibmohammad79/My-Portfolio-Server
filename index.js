@@ -6,9 +6,17 @@ const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
 
-// Set Middleware
-app.use(cors());
 
+//set Middlewar
+const corsConfig = {
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+  }
+  app.use(cors(corsConfig))
+  app.use(express.json());
+
+  
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.5a8lj4m.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -26,6 +34,11 @@ async function run() {
     await client.connect();
 
     const projectDataCollection = client.db('portfolioDb').collection('portfolioData');
+
+
+    app.get('/', (req, res) => {
+      res.send('The portfolio server is running');
+    });
 
     app.get('/project', async (req, res) => {
       const cursor = projectDataCollection.find();
@@ -50,10 +63,6 @@ async function run() {
 }
 
 run().catch(console.dir);
-
-app.get('/', (req, res) => {
-  res.send('The portfolio server is running');
-});
 
 app.listen(port, () => {
   console.log(`The server is running on port ${port}`);
